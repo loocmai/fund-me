@@ -8,20 +8,20 @@ contract FundMe {
 
     using PriceConverter for uint256;
 
-    uint256 public minimumUSD = 5e18;
+    uint256 public constant MINIMUM_USD = 5e18;
 
     address[] public funders;
 
     mapping(address funder => uint256 amountFunded) public addressToAmountFunded;
 
-    address public contractOwner;
+    address public immutable contractOwner;
 
     constructor() {
         contractOwner = msg.sender;
     }
 
     function fund() public payable {
-        require(msg.value.getConversionRate() >= minimumUSD, "Didn't send enough ETH");
+        require(msg.value.getConversionRate() >= MINIMUM_USD, "Didn't send enough ETH");
         funders.push(msg.sender);
         addressToAmountFunded[msg.sender] += msg.value;
     }
