@@ -26,9 +26,7 @@ contract FundMe {
         addressToAmountFunded[msg.sender] += msg.value;
     }
 
-    function withdraw() public {
-        require(contractOwner == msg.sender, "Must be owner");
-
+    function withdraw() public onlyOwner {
         for(uint256 funderIndex = 0; funderIndex < funders.length; funderIndex++)
         {
             address funder = funders[funderIndex];
@@ -52,5 +50,10 @@ contract FundMe {
         // Call method
         (bool callSuccess, /* bytes memory dataReturned */ ) = payable(msg.sender).call{value: address(this).balance}("");
         require(callSuccess, "Failed to send Ether");
+    }
+
+    modifier onlyOwner() {
+        require(contractOwner == msg.sender, "Must be owner");
+        _;
     }
 }
